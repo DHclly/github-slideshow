@@ -1,32 +1,27 @@
-<script src="{{ site.baseurl }}/reveal.js/js/reveal.js"></script>
+<script src="{{ site.baseurl }}/reveal.js/reveal.js"></script>
+<script src="{{ site.baseurl }}/reveal.js/plugin/zoom.js"></script>
+<script src="{{ site.baseurl }}/reveal.js/plugin/notes.js"></script>
 
 <!-- reveal.js init -->
 <script>
   var baseUrl = "{{ site.baseurl }}"
   // Full list of configuration options available here:
-  // https://github.com/hakimel/reveal.js#configuration
+  // https://revealjs.com/config/
   Reveal.initialize({
     {% if site.reveal %}
     {% for attr in site.reveal %}{{attr[0]}}: {{attr[1] | jsval}},
     {% endfor %}
     {% endif %}
 
-    theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
-    transition: Reveal.getQueryHash().transition || {% if site.reveal.transition %}'{{ site.reveal.transition }}',{% else %}'default',{% endif %} // default/cube/page/concave/zoom/linear/fade/none
+    hash: true,
 
     // Optional libraries used to extend on reveal.js
-    dependencies: [
-      // Cross-browser shim that fully implements classList - https://github.com/eligrey/classList.js/
-      { src: baseUrl + '/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
-
+    plugins: [
       // Zoom in and out with Alt+click
-      { src: baseUrl + '/reveal.js/plugin/zoom-js/zoom.js', async: true },
+      RevealZoom,
 
       // Speaker notes
-      { src: baseUrl + '/reveal.js/plugin/notes/notes.js', async: true },
-
-      // Remote control your reveal.js presentation using a touch device
-      //{ src: baseUrl + '/reveal.js/plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+      RevealNotes
     ]
   });
 

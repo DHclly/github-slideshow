@@ -455,10 +455,19 @@ function compileScss(file, outFile) {
 
 function copyProjectAssets() {
   copyStatic(path.join(ROOT, 'assets'), path.join(DEST, 'assets'));
-  copyStatic(path.join(ROOT, 'node_modules', 'reveal.js', 'css'), path.join(DEST, 'reveal.js', 'css'));
-  copyStatic(path.join(ROOT, 'node_modules', 'reveal.js', 'js'), path.join(DEST, 'reveal.js', 'js'));
-  copyStatic(path.join(ROOT, 'node_modules', 'reveal.js', 'lib'), path.join(DEST, 'reveal.js', 'lib'));
-  copyStatic(path.join(ROOT, 'node_modules', 'reveal.js', 'plugin'), path.join(DEST, 'reveal.js', 'plugin'));
+  copyStatic(path.join(ROOT, 'node_modules', 'reveal.js', 'dist'), path.join(DEST, 'reveal.js'));
+
+  // reveal.js v6 only ships print styles as SCSS; compile them alongside the deck.
+  const revealPdf = path.join(DEST, 'reveal.js', 'css', 'print', 'pdf.css');
+  fs.mkdirSync(path.dirname(revealPdf), { recursive: true });
+  fs.writeFileSync(
+    revealPdf,
+    sass.compileString("@import 'reveal.js/css/print/pdf';", {
+      loadPaths: [path.join(ROOT, 'node_modules')],
+      quietDeps: true,
+      silenceDeprecations: ['import'],
+    }).css,
+  );
   copyStatic(
     path.join(ROOT, 'node_modules', '@fortawesome', 'fontawesome-free', 'webfonts'),
     path.join(DEST, 'assets', 'fonts', 'fontawesome'),
