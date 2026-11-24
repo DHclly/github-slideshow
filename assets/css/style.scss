@@ -1,6 +1,29 @@
 ---
-# this ensures Jekyll reads the file to be transformed into CSS later
-# only Main files contain this front matter, not partials.
 ---
 
+// Weights and italics from the open-sans-fontface package (node_modules).
+// The build copies node_modules/open-sans-fontface/fonts/<Weight>/OpenSans-<Weight>.{woff,ttf}
+// to assets/fonts/opensans/<Weight>/, which is why the path below mirrors that layout.
+$OpenSansPath: "../fonts/opensans";
+
+@import "../../node_modules/open-sans-fontface/sass/_variables";
+@import "../../node_modules/open-sans-fontface/sass/_mixins";
+@import "../../node_modules/open-sans-fontface/sass/_Regular";
+@import "../../node_modules/open-sans-fontface/sass/_Italic";
+@import "../../node_modules/open-sans-fontface/sass/_Light";
+@import "../../node_modules/open-sans-fontface/sass/_LightItalic";
+@import "../../node_modules/open-sans-fontface/sass/_Semibold";
+@import "../../node_modules/open-sans-fontface/sass/_SemiboldItalic";
+@import "../../node_modules/open-sans-fontface/sass/_Bold";
+@import "../../node_modules/open-sans-fontface/sass/_BoldItalic";
+@import "../../node_modules/open-sans-fontface/sass/_ExtraBold";
+@import "../../node_modules/open-sans-fontface/sass/_ExtraBoldItalic";
+
+// FontAwesome icon font, using its own webfonts directory.
+$fa-font-path: "../fonts/fontawesome";
+@import "../../node_modules/@fortawesome/fontawesome-free/scss/fontawesome";
+@import "../../node_modules/@fortawesome/fontawesome-free/scss/solid";
+@import "../../node_modules/@fortawesome/fontawesome-free/scss/brands";
+
 @import "solarized/solarized.scss";
+@import "rainbow.scss";

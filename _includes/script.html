@@ -1,4 +1,3 @@
-<script src="{{ site.baseurl }}/reveal.js/lib/js/head.min.js"></script>
 <script src="{{ site.baseurl }}/reveal.js/js/reveal.js"></script>
 
 <!-- reveal.js init -->
@@ -8,7 +7,7 @@
   // https://github.com/hakimel/reveal.js#configuration
   Reveal.initialize({
     {% if site.reveal %}
-    {% for attr in site.reveal %}{{attr[0]}}: {% unless {attr[1]} == false or {attr[1]} == true or {attr[0]} == "width" or {attr[0]} == "height" %}'{{attr[1]}}',{% else %}{{attr[1]}},{% endunless %}
+    {% for attr in site.reveal %}{{attr[0]}}: {{attr[1] | jsval}},
     {% endfor %}
     {% endif %}
 
