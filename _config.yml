@@ -101,9 +101,12 @@ reveal:
   minScale: 0.2
   maxScale: 1.5
 
+# assets/ is compiled and copied by script/build.mjs (npm run build), not Jekyll.
+# Site publishing uses the Node build via .github/workflows/pages.yml.
 exclude: [
   "node_modules",
   "script",
   "package.json",
-  "package-lock.json"
+  "package-lock.json",
+  "assets"
 ]

@@ -454,7 +454,18 @@ function compileScss(file, outFile) {
 }
 
 function copyProjectAssets() {
-  copyStatic(path.join(ROOT, 'assets'), path.join(DEST, 'assets'));
+  // Copy the whole assets/ tree, then rename the case-sensitive font dirs that
+  // Jekyll used to emit lowercase. CI runs on Linux, where CSS url() case matters.
+  for (const file of walk(path.join(ROOT, 'assets'))) {
+    if (file.endsWith('.scss')) continue;
+    const rel = path.relative(path.join(ROOT, 'assets'), file).replace(/\\/g, '/');
+    const out = rel
+      .replace(/\/FontAwesome\//i, '/fontawesome/')
+      .replace(/\/OpenSans\//i, '/opensans/');
+    const dest = path.join(DEST, 'assets', out);
+    fs.mkdirSync(path.dirname(dest), { recursive: true });
+    fs.copyFileSync(file, dest);
+  }
   copyStatic(path.join(ROOT, 'node_modules', 'reveal.js', 'dist'), path.join(DEST, 'reveal.js'));
 
   // reveal.js v6 only ships print styles as SCSS; compile them alongside the deck.
@@ -500,7 +511,11 @@ export function build({ quiet = false } = {}) {
   for (const file of walk(path.join(ROOT, 'assets'))) {
     if (!file.endsWith('.scss')) continue;
     if (!fs.readFileSync(file, 'utf8').startsWith('---')) continue;
-    const relative = path.relative(ROOT, file).replace(/\.scss$/, '.css');
+    const relative = path
+      .relative(ROOT, file)
+      .replace(/\\/g, '/')
+      .replace(/\.scss$/, '.css')
+      .toLowerCase();
     compileScss(file, path.join(DEST, relative));
     log(`Compiled ${relative.replace(/\\/g, '/')}`);
   }

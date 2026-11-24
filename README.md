@@ -60,10 +60,16 @@ npm run build
 
 把 `_site/` 目录整体部署到任意静态托管即可：
 
-- **GitHub Pages**：`_config.yml` 中 `baseurl` 为 `/github-slideshow`，若发布到
-  `https://<用户名>.github.io/github-slideshow/`，可直接发布 `_site/` 内容。
+- **GitHub Pages**：仓库已配置 [.github/workflows/pages.yml](.github/workflows/pages.yml)，
+  推送到 `master` 后由 GitHub Actions 用 Node 构建并发布 `_site/`。
+  首次使用需在仓库 **Settings → Pages → Build and deployment → Source** 选择
+  **GitHub Actions**（不要再选 “Deploy from a branch”）。
+  站点地址为 `https://<用户名>.github.io/github-slideshow/`，与 `baseurl` 一致。
 - **其他静态服务器**：若部署在域名根路径，需把 `_config.yml` 的 `baseurl` 改成 `""`
   （或修改为实际子路径），再重新构建。
+
+> 站点不再使用 Jekyll 构建；`_config.yml` 中的 `exclude` 仍保留，以防仓库另开
+> Jekyll 构建时误把 `node_modules`、`script`、`assets` 等纳入。
 
 ## 三、操作方式
 
@@ -185,10 +191,10 @@ title: "我的新幻灯片"
 | 项目 | 原始 | 现在 |
 | --- | --- | --- |
 | 构建工具 | Ruby + Jekyll + Bundler | Node.js + npm 脚本 |
-| reveal.js | git 子模块（仓库中为空目录） | npm 包 `reveal.js@3.9.2` |
+| reveal.js | git 子模块（仓库中为空目录） | npm 包 `reveal.js@6.0.2` |
 | 字体 | 本地 Droid Serif / Open Sans 文件 | npm 包（Noto Serif 替代 Droid Serif） |
 | 预览 | `bundle exec jekyll serve` | `npm start`（内置 Node 静态服务器） |
-| 部署 | GitHub Pages / 内部 staging 脚本 | 直接部署 `_site/` |
+| 部署 | GitHub Pages（Jekyll）/ 内部 staging 脚本 | GitHub Actions 构建 `_site/` 并发布到 Pages |
 
 原 `Gemfile`、`circle.yml`、`script/setup|server|stage|cibuild` 等 Ruby/CI 脚本已移除。
 
