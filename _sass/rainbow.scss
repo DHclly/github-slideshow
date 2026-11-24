@@ -1,0 +1,90 @@
+// Rainbow accents for the demo deck.
+// Each slide gets a rainbow gradient title (h1) plus a coloured top/bottom band,
+// so the whole deck reads as a spectrum from first slide to last.
+
+$rainbow: (
+  red:     #ff5a5f,
+  orange:  #ff9f43,
+  yellow:  #ffd93d,
+  green:   #4cd964,
+  cyan:    #36cfc9,
+  blue:    #4a9eff,
+  violet:  #9d6bff,
+  magenta: #ff6ec7,
+);
+
+@mixin rainbow-title {
+  background: linear-gradient(
+    90deg,
+    #ff5a5f, #ff9f43, #ffd93d, #4cd964, #36cfc9, #4a9eff, #9d6bff, #ff6ec7
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  text-shadow: none;
+}
+
+@mixin rainbow-band {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background: linear-gradient(
+    90deg,
+    #ff5a5f, #ff9f43, #ffd93d, #4cd964, #36cfc9, #4a9eff, #9d6bff, #ff6ec7
+  );
+}
+
+.reveal .slides section.rainbow {
+  // Keep the box sized by its content. Do NOT set height/width/position here:
+  // reveal.js derives the PDF page size from these boxes and relies on
+  // position:absolute for slide layout, so overriding them breaks both.
+  padding: 0.4rem 0;
+
+  h1,
+  h2 {
+    @include rainbow-title;
+  }
+
+  &::before {
+    @include rainbow-band;
+    top: 0;
+    border-radius: 0 0 6px 6px;
+  }
+
+  &::after {
+    @include rainbow-band;
+    bottom: 0;
+    border-radius: 6px 6px 0 0;
+  }
+}
+
+// Every .pdf-page forces a page break *after* it; suppress the one on the
+// last page so the export doesn't end with a blank sheet.
+.print-pdf .reveal .slides > .pdf-page:last-child {
+  page-break-after: auto !important;
+  break-after: auto !important;
+}
+
+// Cover slide: gradient on the whole heading, oversized.
+.reveal .slides section.rainbow.rainbow-cover {
+  h1 {
+    font-size: 5.5rem;
+    line-height: 1.1;
+  }
+}
+
+// Each content slide also tints its small subtitle in its own colour.
+@each $name, $color in $rainbow {
+  .reveal .slides section.#{$name} {
+    .kicker {
+      color: $color;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 1.2rem;
+    }
+  }
+}
