@@ -71,6 +71,36 @@ npm run build
 > 站点不再使用 Jekyll 构建；`_config.yml` 中的 `exclude` 仍保留，以防仓库另开
 > Jekyll 构建时误把 `node_modules`、`script`、`assets` 等纳入。
 
+### 发布 Release
+
+推送 `v` 开头的 tag 时，[.github/workflows/release.yml](.github/workflows/release.yml)
+会自动构建 `_site/` 并创建 GitHub Release，附件为 `zip` 和 `tar.gz` 两种格式
+（压缩包内没有外层目录，解压即是一个可部署的站点）。
+
+发一次版的完整步骤：
+
+```bash
+npm version 2.0.3 --no-git-tag-version   # 只改 package.json 版本号，不自动提交/打 tag
+git add package.json package-lock.json
+git commit -m "chore: 版本升至 2.0.3"
+git push origin master                   # 触发 Pages 更新
+git tag -a v2.0.3 -m "v2.0.3"
+git push origin v2.0.3                   # 触发 Release
+```
+
+`--no-git-tag-version` 是为了把「改版本号」和「打 tag」分开，避免 tag 指到意外的提交上。
+
+容易踩的点：
+
+- **tag 名要与版本号一致**：`v2.0.3` 对应 `package.json` 的 `2.0.3`。不一致不会报错，但往后对账很别扭。
+- **`contents: write` 不能省**：GitHub Actions 默认权限只读，少了它创建 Release 会报 403。
+- **checkout 默认检出 tag 指向的提交**，发布的就是打 tag 那一刻的代码，无需额外指定。
+- **同一个 tag 不要重复推**：改代码要推新 tag；确实要挪 tag 得用 `git push --force origin <tag>`，通常不推荐。
+- **`_site/` 不参与发布**：CI 里会重新构建，本地 `_site/` 即使不存在也不影响（它在 `.gitignore` 中）。
+- **本地预览压缩包内容**：`tar -tzf xxx.tar.gz`，或解压后直接起一个静态服务器检查。
+- **Pages 与 Release 互不影响**：推 `master` 只更新站点，打 tag 只发 Release；两者都基于同一次 Node 构建。
+
+
 ## 三、操作方式
 
 | 操作 | 按键 |
