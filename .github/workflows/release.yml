@@ -1,0 +1,31 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: |
+          tar -czf github-slideshow-${{ github.ref_name }}.tar.gz -C _site .
+          node script/zip.mjs _site github-slideshow-${{ github.ref_name }}.zip
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.ref_name }}
+          generate_release_notes: true
+          files: |
+            github-slideshow-${{ github.ref_name }}.zip
+            github-slideshow-${{ github.ref_name }}.tar.gz

@@ -1,6 +1,6 @@
 {
   "name": "github-slideshow",
-  "version": "1.0.1",
+  "version": "2.0.1",
   "private": true,
   "description": "A fun activity for learning Git and GitHub.",
   "scripts": {
